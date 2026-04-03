@@ -4,8 +4,10 @@ import { mkdtempSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
 const tmpDirs = [];
+const REPO_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
 test.afterEach(() => {
   while (tmpDirs.length > 0) {
@@ -14,18 +16,18 @@ test.afterEach(() => {
 });
 
 test("writes Claude agent memory with executable routing rules", () => {
-  const home = mkdtempSync(path.join(os.tmpdir(), "skill-memory-router-"));
+  const home = mkdtempSync(path.join(os.tmpdir(), "skill-bundle-fabric-"));
   tmpDirs.push(home);
   mkdirSync(path.join(home, ".claude"), { recursive: true });
 
-  const stdout = execFileSync("node", [
+  const stdout = execFileSync(process.execPath, [
     "scripts/write-host-memory.mjs",
     "--preset", "presets/unbrowse-workflows.json",
     "--host", "claude",
     "--scope", "agent",
     "--cwd", home,
   ], {
-    cwd: "/tmp/skill-memory-router",
+    cwd: REPO_ROOT,
     env: { ...process.env, HOME: home },
     encoding: "utf8",
   });
@@ -40,23 +42,23 @@ test("writes Claude agent memory with executable routing rules", () => {
 });
 
 test("prefers project memory in auto scope when the file exists", () => {
-  const home = mkdtempSync(path.join(os.tmpdir(), "skill-memory-router-project-"));
+  const home = mkdtempSync(path.join(os.tmpdir(), "skill-bundle-fabric-project-"));
   tmpDirs.push(home);
   mkdirSync(path.join(home, ".codex"), { recursive: true });
   execFileSync("sh", ["-lc", "printf '# local\\n' > AGENTS.md"], { cwd: home });
 
-  execFileSync("node", [
+  execFileSync(process.execPath, [
     "scripts/write-host-memory.mjs",
     "--preset", "presets/unbrowse-workflows.json",
     "--host", "codex",
     "--scope", "auto",
     "--cwd", home,
   ], {
-    cwd: "/tmp/skill-memory-router",
+    cwd: REPO_ROOT,
     env: { ...process.env, HOME: home },
     encoding: "utf8",
   });
 
   const written = readFileSync(path.join(home, "AGENTS.md"), "utf8");
-  assert.match(written, /HOST_MEMORY_ROUTER/);
+  assert.match(written, /SKILL_BUNDLE_FABRIC/);
 });

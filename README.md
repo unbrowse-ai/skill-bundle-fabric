@@ -1,10 +1,15 @@
-# skill-memory-router
+# skill-bundle-fabric
 
-Config-driven host memory routing for skills.
+Develop, package, share, index, and host-route reusable skill bundles.
 
-This repo provides one reusable skill, `host-memory-router`. It writes executable routing blocks into the right host memory file so the host knows which installed skill to call for which request shape.
+This repo provides one installable skill, `skill-bundle-fabric`. It treats a skill bundle as one config-driven unit:
+- skills to install
+- request shapes -> skill calls
+- share artifacts
+- registry/index metadata
+- host memory blocks
 
-Supported targets:
+Supported hosts:
 - Codex: `AGENTS.md`
 - Claude: `CLAUDE.md`
 - OpenClaw: `MEMORY.md`
@@ -12,12 +17,20 @@ Supported targets:
 ## Install
 
 ```bash
-npx skills add https://github.com/unbrowse-ai/skill-memory-router --skill host-memory-router
+npx skills add https://github.com/unbrowse-ai/skill-bundle-fabric --skill skill-bundle-fabric
 ```
 
-## Use
+## Main flow
 
-With the bundled Unbrowse preset:
+Build all bundle artifacts:
+
+```bash
+node scripts/build-bundle.mjs \
+  --preset presets/unbrowse-workflows.json \
+  --out dist
+```
+
+Write host memory:
 
 ```bash
 node scripts/write-host-memory.mjs \
@@ -26,29 +39,35 @@ node scripts/write-host-memory.mjs \
   --scope agent
 ```
 
-Generic use:
+## Output artifacts
 
-```bash
-node scripts/write-host-memory.mjs \
-  --preset /path/to/your-bundle.json \
-  --host codex \
-  --scope project
-```
+`build-bundle` writes:
+- `bundle.json` — canonical bundle manifest
+- `share.json` — file-share/p2p manifest
+- `registry-entry.json` — backend/index ingestion payload
+- `hosts/<host>/<file>` — host-ready memory snippets
 
-## Preset format
+## Preset shape
 
 ```json
 {
-  "title": "bundle name",
-  "repo": "https://github.com/org/repo",
+  "bundle_id": "unbrowse-workflows",
+  "title": "Unbrowse Workflow Bundle",
+  "repo": "https://github.com/unbrowse-ai/unbrowse",
   "bootstrap_skill": "find-skills",
   "skills": ["skill-a", "skill-b"],
   "routes": [
-    {
-      "when": "request is about X",
-      "call": "skill-a"
-    }
-  ]
+    { "when": "the request is about X", "call": "skill-a" }
+  ],
+  "share": {
+    "transport": "files",
+    "manifest_path": "/.well-known/skill-bundles/unbrowse-workflows/share.json"
+  },
+  "index": {
+    "slug": "unbrowse-workflows",
+    "summary": "What this bundle is for",
+    "tags": ["bundle", "workflow"]
+  }
 }
 ```
 

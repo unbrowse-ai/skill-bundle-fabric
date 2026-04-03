@@ -1,4 +1,5 @@
 {
+  "bundle_id": "unbrowse-workflows",
   "title": "Unbrowse Workflow Bundle",
   "repo": "https://github.com/unbrowse-ai/unbrowse",
   "bootstrap_skill": "find-skills",
@@ -25,5 +26,14 @@
       "when": "the request is about blockers or status on main CI or deploy runs",
       "call": "main-actions-triage"
     }
-  ]
+  ],
+  "share": {
+    "transport": "files",
+    "manifest_path": "/.well-known/skill-bundles/unbrowse-workflows/share.json"
+  },
+  "index": {
+    "slug": "unbrowse-workflows",
+    "summary": "Develop, share, and route Unbrowse workflow skills as one portable bundle.",
+    "tags": ["unbrowse", "skills", "workflow-bundle", "memory-routing"]
+  }
 }

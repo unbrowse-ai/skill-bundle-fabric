@@ -9,9 +9,15 @@
 - OpenClaw project memory: `./MEMORY.md`
 - OpenClaw agent memory: `$OPENCLAW_HOME/MEMORY.md`
 
-## Rule
+## Routing Rule
 
-- write executable routing, not passive notes
-- each route line should say: `If the request is about X, call Y`
-- install commands should sit in the same block as routing rules
-- replace the old managed block on rerun instead of duplicating it
+- each route line must say: `If the request is about X, call Y`
+- install commands live in the same managed block
+- reruns replace the managed block instead of duplicating it
+
+## Bundle Outputs
+
+- `bundle.json` — canonical bundle manifest
+- `share.json` — share/export manifest
+- `registry-entry.json` — backend/index ingestion payload
+- `hosts/<host>/<file>` — rendered host snippets
