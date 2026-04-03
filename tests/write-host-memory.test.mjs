@@ -37,6 +37,7 @@ test("writes Claude agent memory with executable routing rules", () => {
   const written = readFileSync(target, "utf8");
 
   assert.equal(result.target_file, target);
+  assert.match(written, /call `skill-bundle-fabric`/);
   assert.match(written, /call `history-skill-miner`/);
   assert.match(written, /call `docs-release-sync`/);
 });

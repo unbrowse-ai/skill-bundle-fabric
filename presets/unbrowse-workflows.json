@@ -1,6 +1,10 @@
 {
   "bundle_id": "unbrowse-workflows",
   "title": "Unbrowse Workflow Bundle",
+  "fabric": {
+    "repo": "https://github.com/unbrowse-ai/skill-bundle-fabric",
+    "skill": "skill-bundle-fabric"
+  },
   "repo": "https://github.com/unbrowse-ai/unbrowse",
   "bootstrap_skill": "find-skills",
   "skills": [
@@ -9,6 +13,40 @@
     "skill-surface-ship",
     "main-actions-triage"
   ],
+  "dependency_graph": {
+    "nodes": [
+      {
+        "skill": "skill-bundle-fabric",
+        "provides": ["workflow-bundle-fabrication"],
+        "requires": ["workflow-history-mining", "workflow-sharing", "workflow-indexing", "host-memory-routing"],
+        "alternatives": []
+      },
+      {
+        "skill": "history-skill-miner",
+        "provides": ["workflow-history-mining"],
+        "requires": [],
+        "alternatives": []
+      },
+      {
+        "skill": "docs-release-sync",
+        "provides": ["workflow-doc-sync"],
+        "requires": [],
+        "alternatives": []
+      },
+      {
+        "skill": "skill-surface-ship",
+        "provides": ["workflow-sharing", "workflow-indexing"],
+        "requires": [],
+        "alternatives": []
+      },
+      {
+        "skill": "main-actions-triage",
+        "provides": ["main-ci-triage"],
+        "requires": [],
+        "alternatives": []
+      }
+    ]
+  },
   "routes": [
     {
       "when": "the request is about turning repeated local workflows into skills",
@@ -27,6 +65,56 @@
       "call": "main-actions-triage"
     }
   ],
+  "history": {
+    "sources": [
+      "~/.codex/history.jsonl",
+      "~/.codex/session_index.jsonl",
+      "~/.codex/archived_sessions"
+    ],
+    "skills": [
+      {
+        "skill": "history-skill-miner",
+        "min_hits": 2,
+        "matchers": [
+          "repeated local workflows",
+          "turn repeated local workflows into skills",
+          "mine local codex chat history",
+          "history skill"
+        ]
+      },
+      {
+        "skill": "docs-release-sync",
+        "min_hits": 2,
+        "matchers": [
+          "readme",
+          "changelog",
+          "release notes",
+          "docs alignment"
+        ]
+      },
+      {
+        "skill": "skill-surface-ship",
+        "min_hits": 2,
+        "matchers": [
+          "skills add",
+          "skill install",
+          "skill publish",
+          "skill repo",
+          "skill sync"
+        ]
+      },
+      {
+        "skill": "main-actions-triage",
+        "min_hits": 2,
+        "matchers": [
+          "github actions",
+          "main ci",
+          "blockers on main",
+          "deploy runs"
+        ]
+      }
+    ]
+  },
   "share": {
     "transport": "files",
     "manifest_path": "/.well-known/skill-bundles/unbrowse-workflows/share.json"

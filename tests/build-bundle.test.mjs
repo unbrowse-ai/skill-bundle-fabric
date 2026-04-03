@@ -37,7 +37,13 @@ test("builds bundle, share, registry, and host artifacts from one preset", () =>
 
   assert.equal(result.bundle_id, "unbrowse-workflows");
   assert.equal(bundle.bundle_id, "unbrowse-workflows");
+  assert.equal(bundle.fabric.skill, "skill-bundle-fabric");
+  assert.equal(bundle.dependency_graph.nodes[0].skill, "skill-bundle-fabric");
   assert.equal(share.transport, "files");
+  assert.match(share.install_commands.fabric, /skill-bundle-fabric/);
   assert.equal(registry.slug, "unbrowse-workflows");
+  assert.equal(registry.fabric.skill, "skill-bundle-fabric");
+  assert.match(result.files.join("\n"), /history-report\.json/);
+  assert.match(claude, /call `skill-bundle-fabric`/);
   assert.match(claude, /call `main-actions-triage`/);
 });
