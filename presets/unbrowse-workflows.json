@@ -1,0 +1,29 @@
+{
+  "title": "Unbrowse Workflow Bundle",
+  "repo": "https://github.com/unbrowse-ai/unbrowse",
+  "bootstrap_skill": "find-skills",
+  "skills": [
+    "history-skill-miner",
+    "docs-release-sync",
+    "skill-surface-ship",
+    "main-actions-triage"
+  ],
+  "routes": [
+    {
+      "when": "the request is about turning repeated local workflows into skills",
+      "call": "history-skill-miner"
+    },
+    {
+      "when": "the request is about README, changelog, or release-note alignment",
+      "call": "docs-release-sync"
+    },
+    {
+      "when": "the request is about skill install, publish, packaging, or sync surface changes",
+      "call": "skill-surface-ship"
+    },
+    {
+      "when": "the request is about blockers or status on main CI or deploy runs",
+      "call": "main-actions-triage"
+    }
+  ]
+}
